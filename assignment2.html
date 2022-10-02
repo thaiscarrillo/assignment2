@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>experiment</title>
+    <script src="https://unpkg.com/jspsych@7.3.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.1"></script>
+    <link href="https://unpkg.com/jspsych@7.1.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <script src="list1.js"></script>
+    <script src="list2.js"></script>
+    <script src="list3.js"></script>
+    <script src="list4.js"></script>
+
+
+
+
+
+</head>
+
+<body>
+
+    <script>
+
+        var jsPsych = initJsPsych({
+            on_finish: function () {
+            }
+        });
+
+        var subject_id = Math.floor(Math.random() * 100000);
+
+        var instructions = {
+            type: jsPsychHtmlButtonResponse,
+
+            stimulus: 'Instructions',
+
+            choices: ['Continue'],
+
+        };
+
+        var prompt = {
+
+            type: jsPsychHtmlKeyboardResponse,
+
+            stimulus: jsPsych.timelineVariable('prompt'),
+
+            choices: "NO_KEYS",
+
+            trial_duration: 1000,
+
+            data: {
+                typeoftrial: 'prompt',
+                list_number: jsPsych.timelineVariable('list'),
+                trialcondition: jsPsych.timelineVariable('prime_condition'),
+                subject: subject_id
+            }
+
+        }
+
+        var prime_given = {
+
+            type: jsPsychHtmlKeyboardResponse,
+
+            stimulus: jsPsych.timelineVariable('prime_given'),
+
+            choices: "NO_KEYS",
+
+            trial_duration: 250,
+
+            data: {
+                typeoftrial: 'prime_given',
+                list_number: jsPsych.timelineVariable('list'),
+                trialcondition: jsPsych.timelineVariable('prime_condition'),
+                subject: subject_id
+            }
+
+        }
+
+        var state_response = {
+
+            type: jsPsychHtmlButtonResponse,
+
+            stimulus: 'Select a response',
+            
+            choices: ['know', 'don\'t know', 'other word in mind', 'tip of the tongue state'],
+
+            data: {
+                typeoftrial: 'state_response',
+                list_number: jsPsych.timelineVariable('list'),
+                trialcondition: jsPsych.timelineVariable('prime_condition'),
+                subject: subject_id
+            }
+
+        }
+
+        var response = {
+
+            type: jsPsychSurveyText,
+
+            questions: [
+                { prompt: 'Sentence?' },
+            ]
+
+            data: {
+                typeoftrial: 'response',
+                list_number: jsPsych.timelineVariable('list'),
+                trialcondition: jsPsych.timelineVariable('prime_condition'),
+                subject: subject_id
+            }
+        }
+
+        var end_experiment = {
+
+            type: jsPsychHtmlKeyboardResponse,
+
+            stimulus: 'Thank you for participating! Click any key to end the experiment.',
+        }
+
+        var list = [1, 2, 3, 4]
+        var CONDITION = list[Math.floor(Math.random() * list.length)];
+
+        var teststimuli = []
+        if (CONDITION == 1) { teststimuli = list1 }
+        else if (CONDITION == 2) { teststimuli = list2 }
+        else if (CONDITION == 3) { teststimuli = list3 }
+        else { teststimuli = list4 }
+
+        jsPsych.run([instructions, prompt, state_response, response, end_experiment]);
+            
+
+    </script>
+    
+</body>
+
+</html>
