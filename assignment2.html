@@ -24,14 +24,16 @@
 
     <script>
 
-        var jsPsych = initJsPsych({
+        const jsPsych = initJsPsych({
             on_finish: function () {
+                jsPsych.data.displayData();
             }
         });
 
         var subject_id = Math.floor(Math.random() * 100000);
 
         var instructions = {
+
             type: jsPsychHtmlButtonResponse,
 
             stimulus: 'Instructions',
@@ -40,7 +42,7 @@
 
         };
 
-        var prompt = {
+        var sentence = {
 
             type: jsPsychHtmlKeyboardResponse,
 
@@ -48,18 +50,21 @@
 
             choices: "NO_KEYS",
 
-            trial_duration: 1000,
+            trial_duration: 5000,
 
             data: {
-                typeoftrial: 'prompt',
+
                 list_number: jsPsych.timelineVariable('list'),
+
                 trialcondition: jsPsych.timelineVariable('prime_condition'),
+
                 subject: subject_id
+
             }
 
         }
 
-        var prime_given = {
+        var prime = {
 
             type: jsPsychHtmlKeyboardResponse,
 
@@ -70,15 +75,18 @@
             trial_duration: 250,
 
             data: {
-                typeoftrial: 'prime_given',
+
                 list_number: jsPsych.timelineVariable('list'),
+
                 trialcondition: jsPsych.timelineVariable('prime_condition'),
+
                 subject: subject_id
+
             }
 
         }
 
-        var state_response = {
+        var state = {
 
             type: jsPsychHtmlButtonResponse,
 
@@ -87,10 +95,13 @@
             choices: ['know', 'don\'t know', 'other word in mind', 'tip of the tongue state'],
 
             data: {
-                typeoftrial: 'state_response',
+
                 list_number: jsPsych.timelineVariable('list'),
+
                 trialcondition: jsPsych.timelineVariable('prime_condition'),
+
                 subject: subject_id
+
             }
 
         }
@@ -100,15 +111,11 @@
             type: jsPsychSurveyText,
 
             questions: [
-                { prompt: 'Sentence?' },
+
+                { prompt: jsPsych.timelineVariable('prompt') },
+
             ]
 
-            data: {
-                typeoftrial: 'response',
-                list_number: jsPsych.timelineVariable('list'),
-                trialcondition: jsPsych.timelineVariable('prime_condition'),
-                subject: subject_id
-            }
         }
 
         var end_experiment = {
@@ -119,6 +126,7 @@
         }
 
         var list = [1, 2, 3, 4]
+
         var CONDITION = list[Math.floor(Math.random() * list.length)];
 
         var teststimuli = []
@@ -127,7 +135,18 @@
         else if (CONDITION == 3) { teststimuli = list3 }
         else { teststimuli = list4 }
 
-        jsPsych.run([instructions, prompt, state_response, response, end_experiment]);
+        console.log("list=", list)
+        console.log("CONDITION=", CONDITION)
+        console.log("teststimuli=", teststimuli)
+
+        var experiment_procedure = {
+            timeline: [sentence, prime, state, response],
+            timeline_variables: teststimuli,
+            randomize_order: true
+
+        }
+
+        jsPsych.run([instructions, experiment_procedure, end_experiment]);
             
 
     </script>
